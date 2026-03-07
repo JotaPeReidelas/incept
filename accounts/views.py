@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.utils import timezone
 from .models import User, Followers
 import base64
 from feed.models import Post
@@ -85,6 +86,7 @@ def edit_core_pg(request):
 
 def edit_core(request): #edit core
     if request.method == "POST":
+        nick = request.POST.get('nick')
         real_name = request.POST.get('real_name')
         bio = request.POST.get('bio')
         art_style = request.POST.get('art_style')
@@ -93,6 +95,8 @@ def edit_core(request): #edit core
         if core_picture:
             core_p = base64.b64encode(core_picture.read()).decode('utf-8')
             user.core_picture = core_p
+        if nick:
+            user.nick = nick #adicionar um cooldown dps de 7 dias
         user.real_name = real_name
         user.bio = bio
         user.art_style = art_style
